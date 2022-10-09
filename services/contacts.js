@@ -5,24 +5,29 @@ const listContacts = async () => {
   return data;
 };
 
-const getContactById = (contactId) => {
-  return Contact.findById(contactId);
+const getContactById = async (contactId) => {
+  const data = await Contact.findById(contactId);
+  return data;
 };
 
-const removeContact = (contactId) => {
-  return Contact.findByIdAndRemove(contactId);
+const removeContact = async (contactId) => {
+  const data = await Contact.findByIdAndRemove(contactId);
+  return data;
 };
 
-const addContact = (name, email, phone, favorite) => {
-  return Contact.create({ name, email, phone, favorite });
+const addContact = async (name, email, phone, favorite) => {
+  const data = await Contact.create({ name, email, phone, favorite });
+  return data;
 };
 
-const updateContact = (contactId, body) => {
-  return Contact.findByIdAndUpdate(contactId, body, { new: true });
+const updateContact = async (contactId, body) => {
+  const data = await Contact.findByIdAndUpdate(contactId, body, { new: true });
+  return data;
 };
 
-const updateStatusContact = (contactId, body) => {
-  return Contact.findByIdAndUpdate(contactId, body, { new: true });
+const updateStatusContact = async (contactId, body) => {
+  const data = await Contact.findByIdAndUpdate(contactId, body, { new: true });
+  return data;
 };
 
 module.exports = {

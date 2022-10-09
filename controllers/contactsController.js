@@ -60,10 +60,10 @@ const updateStatus = async (req, res) => {
 
   const updateContact = await updateStatusContact(id, req.body);
 
- if (!updateContact) {
-   return res.status(400).json({ message: "missing field favorite" });
- }
-  res.json({ status: "success", code: 201, data: { updateContact } });
+  if (!updateContact) {
+    return res.status(404).json({ message: "Not found" });
+  }
+  res.json({ status: "success", code: 200, data: { updateContact } });
 };
 
 module.exports = {
