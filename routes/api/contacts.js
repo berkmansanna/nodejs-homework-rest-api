@@ -10,6 +10,7 @@ const {
 } = require("../../controllers/contactsController");
 const ctrlWrapper = require("../../helpers/ctrlWrapper");
 const validationData = require("../../middlewares/contactValidation");
+const verifyerToken = require("../../middlewares/verifyerToken");
 const {
   contactSchemaJoi,
   updateStatusJoiSchema,
@@ -17,13 +18,18 @@ const {
 
 const router = express.Router();
 
-router.get("/", ctrlWrapper(getContacts));
+router.get("/", verifyerToken, ctrlWrapper(getContacts));
 
 router.get("/:id", ctrlWrapper(getById));
 
-router.post("/", validationData(contactSchemaJoi), ctrlWrapper(createContact));
+router.post(
+  "/",
+  verifyerToken,
+  validationData(contactSchemaJoi),
+  ctrlWrapper(createContact)
+);
 
-router.delete("/:id", ctrlWrapper(deleteContact));
+router.delete("/:id", verifyerToken, ctrlWrapper(deleteContact));
 
 router.put(
   "/:id",
@@ -33,6 +39,7 @@ router.put(
 
 router.patch(
   "/:id/favorite",
+  verifyerToken,
   validationData(updateStatusJoiSchema),
   ctrlWrapper(updateStatus)
 );
