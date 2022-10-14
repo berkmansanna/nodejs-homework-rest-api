@@ -29,7 +29,7 @@ router.post(
   ctrlWrapper(createContact)
 );
 
-router.delete("/:id", verifyerToken, ctrlWrapper(deleteContact));
+router.delete("/:id", ctrlWrapper(deleteContact));
 
 router.put(
   "/:id",
@@ -39,7 +39,6 @@ router.put(
 
 router.patch(
   "/:id/favorite",
-  verifyerToken,
   validationData(updateStatusJoiSchema),
   ctrlWrapper(updateStatus)
 );

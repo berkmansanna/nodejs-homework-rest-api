@@ -17,8 +17,8 @@ const getContactById = async (contactId) => {
   return data;
 };
 
-const removeContact = async (contactId, id) => {
-  const data = await Contact.findByIdAndRemove(contactId, { owner: id });
+const removeContact = async (contactId) => {
+  const data = await Contact.findByIdAndRemove(contactId);
   return data;
 };
 
@@ -38,12 +38,8 @@ const updateContact = async (contactId, body) => {
   return data;
 };
 
-const updateStatusContact = async (contactId, body, id) => {
-  const data = await Contact.findByIdAndUpdate(
-    contactId,
-    { ...body, owner: id },
-    { new: true }
-  );
+const updateStatusContact = async (contactId, body) => {
+  const data = await Contact.findByIdAndUpdate(contactId, body, { new: true });
   return data;
 };
 

@@ -28,9 +28,8 @@ const getById = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const { _id } = req.user;
 
-  const result = await removeContact(id, _id);
+  const result = await removeContact(id);
   if (!result) {
     throw RequestError(404);
   }
@@ -63,9 +62,8 @@ const createContact = async (req, res) => {
 
 const updateStatus = async (req, res) => {
   const { id } = req.params;
-  const { _id } = req.user;
 
-  const updateContact = await updateStatusContact(id, req.body, _id);
+  const updateContact = await updateStatusContact(id, req.body);
 
   if (!updateContact) {
     return res.status(404).json({ message: "Not found" });

@@ -34,7 +34,7 @@ router.get("/current", verifyerToken, ctrlWrapper(getCurrent));
 router.get("/logout", verifyerToken, ctrlWrapper(logoutController));
 
 router.patch(
-  "/",
+  "/subscription",
   verifyerToken,
   validationData(updateSubJoi),
   ctrlWrapper(updateSubController)
