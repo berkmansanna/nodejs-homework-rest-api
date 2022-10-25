@@ -15,7 +15,6 @@ const {
   updateUserAvatar,
 } = require("../services/auth");
 const { SECRET_KEY } = process.env;
-const fs = require("fs/promises");
 const path = require("path");
 const Jimp = require("jimp");
 
@@ -106,8 +105,6 @@ const updateAvatar = async (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-  await fs.rename(tempUpload, resultUpload);
-
   const avatarURL = path.join("avatars", filename);
   await updateUserAvatar(_id, { avatarURL });
 
