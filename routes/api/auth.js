@@ -7,6 +7,7 @@ const {
   registSchemaJoi,
   loginSchemaJoi,
   updateSubJoi,
+  verifyEmailSchemaJoi,
 } = require("../../schemas/user");
 const {
   registerController,
@@ -15,6 +16,8 @@ const {
   logoutController,
   updateSubController,
   updateAvatar,
+  verifyEmail,
+  resendVerifyEmail,
 } = require("../../controllers/authController");
 const verifyerToken = require("../../middlewares/verifyerToken");
 const router = express.Router();
@@ -48,5 +51,11 @@ router.patch(
   upload.single("avatar"),
   ctrlWrapper(updateAvatar)
 );
+router.get("/verify/:verificationToken", ctrlWrapper(verifyEmail));
 
+router.post(
+  "/verify",
+  validationData(verifyEmailSchemaJoi),
+  ctrlWrapper(resendVerifyEmail)
+);
 module.exports = router;
