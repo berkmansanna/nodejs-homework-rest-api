@@ -29,6 +29,16 @@ const updateUserAvatar = async (id, avatarURL) => {
   const data = User.findByIdAndUpdate(id, avatarURL);
   return data;
 };
+
+const searchVerificationToken = async (verifyToken) => {
+  const data = await User.findOne(verifyToken);
+  return data;
+};
+
+const updateVerify = async (id, verify, verificationToken) => {
+  const data = await User.findByIdAndUpdate(id, verify, verificationToken);
+  return data;
+};
 module.exports = {
   userSearch,
   createUser,
@@ -36,4 +46,6 @@ module.exports = {
   logout,
   updateStatus,
   updateUserAvatar,
+  searchVerificationToken,
+  updateVerify,
 };

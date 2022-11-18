@@ -5,7 +5,7 @@ const {
   comparePassword,
 } = require("../helpers/handlerPassword");
 const RequestError = require("../helpers/RequestError");
-
+const sendEmail = require("../helpers/sendEmail");
 const {
   userSearch,
   createUser,
@@ -13,10 +13,13 @@ const {
   logout,
   updateStatus,
   updateUserAvatar,
+  searchVerificationToken,
+  updateVerify,
 } = require("../services/auth");
 const { SECRET_KEY } = process.env;
 const path = require("path");
 const Jimp = require("jimp");
+const { nanoid } = require("nanoid");
 
 const avatarsDir = path.join(__dirname, "../", "public", "avatars");
 
@@ -28,7 +31,20 @@ const registerController = async (req, res) => {
   }
   const hashedPass = await hashingPassword(password);
   const avatarURL = createAvatar(email);
-  const result = await createUser(name, email, hashedPass, avatarURL);
+  const verificationToken = nanoid();
+  const result = await createUser(
+    name,
+    email,
+    hashedPass,
+    avatarURL,
+    verificationToken
+  );
+  const mail = {
+    to: email,
+    subject: "Verification email",
+    html: `<a href="http://localhost:3000/api/users/verify/${verificationToken}" target="_blank">Click to verify</a>`,
+  };
+  await sendEmail(mail);
   res.status(201).json({ email: result.email, password: result.password });
 };
 
@@ -39,6 +55,9 @@ const loginController = async (req, res) => {
 
   if (!user || !passCompare) {
     throw RequestError(401, "Email or password is wrong");
+  }
+  if (!user.verify) {
+    throw RequestError(400, "Email not verify");
   }
 
   const token = tokenCreater({ id: user._id }, SECRET_KEY);
@@ -113,6 +132,38 @@ const updateAvatar = async (req, res) => {
   });
 };
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+  const { _id } = req.user;
+  const user = await searchVerificationToken(verificationToken);
+  if (!user) {
+    throw RequestError(404, "User not found");
+  }
+  await updateVerify(_id, { verify: true, verificationToken: null });
+  res.status(200).json({ message: "Verification successful" });
+};
+
+const resendVerifyEmail = async (res, req) => {
+  const { email } = req.body;
+
+  const user = await userSearch(email);
+  if (!user) {
+    throw RequestError(404, "Not found");
+  }
+  if (user.verify) {
+    throw RequestError(400, "User alredy verify");
+  }
+  const mail = {
+    to: email,
+    subject: "Verification email",
+    html: `<a href="http://localhost:3000/api/users/verify/${verificationToken}" target="_blank">Click to verify</a>`,
+  };
+  await sendEmail(mail);
+  res.status(200).json({
+    message: "Verification email sent",
+  });
+};
+
 module.exports = {
   registerController,
   loginController,
@@ -120,4 +171,6 @@ module.exports = {
   logoutController,
   updateSubController,
   updateAvatar,
+  verifyEmail,
+  resendVerifyEmail,
 };
